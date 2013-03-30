@@ -1,8 +1,9 @@
+import logging
 from thesis.utils import another
-from vrp.sorting_keys import edges_by_weight, edges_by_tau
 
 import networkx as nx
 import random
+from vrp.models import Order
 
 
 PHEROMONE = 'pheromone_level'
@@ -13,23 +14,30 @@ Q0 = 0.5
 TAU0 = 1.0 / 400
 
 
-#For all the functions: 'explored' is the list, not the nx.Graph object
+#For all the functions: 'explored' is the nx.Graph object
+#I'll keep an order in which a graph is traversed as a graph attribute path.
 
 
 def solve_vrp(graph, start, vehicles, iter_num=10):
     graph = init_with_pheromones(graph)
     best_paths = []
 
-    #TODO: WRITE THE CODE, BLJAD!
     for i_ in xrange(iter_num):
         for v in vehicles:
-            path = []
+            explored = nx.Graph(path=[])
             current = start
-            while set(path) != set(graph.nodes()):
-                while not v.is_empty():
-                    nxt = next_node(graph, current)
-                    path.append(nxt)
-                return path
+            while explored.nodes() != graph.nodes():
+                print current
+                if v.is_empty():
+                    current = start
+                    v.fill()
+                    continue
+                nxt = next_node(graph, current, explored)
+                explored.add_node(nxt)
+                explored.graph['path'].append(nxt)
+                v.pour_off_or_empty(order_capacity(graph, current))
+                current = nxt
+            return explored
 
     return sorted(best_paths, key=edges_by_weight())[0]
 
@@ -40,16 +48,17 @@ def next_node(graph, current, explored):
         edges = sorted(
             [e for e in graph.edges(current)
                 if another(e, current) not in explored],
-            key=edges_by_tau()
+            key=edges_by_tau(graph)
         )
+        # print explored.edges()
+        # print current
+        # print edges
         return another(edges[-1], current)
     else:
         return random_neighbour(graph, current, explored)
 
 
-def random_neighbour(graph, current, explored=None):
-    if explored is None:
-        explored.list(current)
+def random_neighbour(graph, current, explored):
     distr = neighb_distribution(graph, current, explored)
     r = random.random()
     for k, v in distr.iteritems():
@@ -57,9 +66,7 @@ def random_neighbour(graph, current, explored=None):
             return k
 
 
-def neighb_distribution(graph, current, explored=None):
-    if explored is None:
-        explored.list(current)
+def neighb_distribution(graph, current, explored):
     neighbs = [n for n in graph.neighbors(current) if n not in explored]
     total = 0
     distr = {}
@@ -102,3 +109,15 @@ def eta(graph, r, s):
         1/d. d is Euclidean distance.
     """
     return 1.0 / (graph[r][s]['weight'])
+
+
+def edges_by_weight():
+    return lambda x: sum([t[2]['weight'] for t in x.edges(data='weight')])
+
+
+def edges_by_tau(graph):
+    return lambda t: tau(graph, t[0], t[1]) * eta(graph, t[0], t[1]) ** BETA
+
+
+def order_capacity(graph, node):
+    return graph.node[node][Order.CAPACITY]

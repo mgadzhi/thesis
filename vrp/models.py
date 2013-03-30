@@ -118,8 +118,8 @@ class Vehicle(models.Model):
         return v
 
     @classmethod
-    def get_filtered_vehicles_with_full_tanks(cls, **kwargs):
-        vs = cls.objects.filter(**kwargs)
+    def get_all_vehicles_with_full_tanks(cls):
+        vs = cls.objects.all()
         for v in vs:
             v.set_capacity(v.max_capacity)
         return vs
@@ -165,6 +165,8 @@ class Order(models.Model):
     STATUS_EXECUTING = 'executing'
     STATUS_FINISHED = 'finished'
 
+    CAPACITY = 'capacity'
+
     @classmethod
     def get_by_status(cls, status):
         return cls.objects.filter(status=status)
@@ -187,5 +189,5 @@ def load_orders_map_by_id(id_):
     orders = Order.get_created()
     for order in orders:
         if map.has_node(order.station):
-            map.node[order.station]['capacity'] = order.capacity
+            map.node[order.station][Order.CAPACITY] = order.capacity
     return map
