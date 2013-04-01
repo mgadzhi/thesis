@@ -24,22 +24,49 @@ def solve_vrp(graph, start, vehicles, iter_num=10):
 
     for i_ in xrange(iter_num):
         for v in vehicles:
-            explored = nx.Graph(path=[])
             current = start
+            explored = nx.Graph(path=[current])
             while explored.nodes() != graph.nodes():
-                print current
+                #If vehicle's tank is empty, we must return to the start
                 if v.is_empty():
+                    move_to(explored, current, start, **{
+                        WEIGHT: get_weight(graph, (current, start)),
+                        PHEROMONE: get_pheromone(graph, (current, start)),
+                    })
                     current = start
                     v.fill()
                     continue
                 nxt = next_node(graph, current, explored)
-                explored.add_node(nxt)
-                explored.graph['path'].append(nxt)
+                move_to(explored, current, nxt, **{
+                    WEIGHT: get_weight(graph, (current, nxt)),
+                    PHEROMONE: get_pheromone(graph, (current, nxt)),
+                })
                 v.pour_off_or_empty(order_capacity(graph, current))
                 current = nxt
-            return explored
+            #When the loop's finished we must manually add an edge
+            #from the last explored node to the start
+            last = explored.graph['path'][-1]
+            move_to(explored, last, start, **{
+                WEIGHT: get_weight(graph, (last, start)),
+                PHEROMONE: get_pheromone(graph, (last, start)),
+            })
+            print '-' * 42
+            print explored.graph['path']
+            print total_cost(explored)
+            print '-' * 42
+            best_paths.append(explored)
 
-    return sorted(best_paths, key=edges_by_weight())[0]
+    return sorted(best_paths, key=edges_by_total_cost())[0]
+
+
+#TODO: Refactor this non-pure function
+def move_to(graph, from_, to_, **kwargs):
+    graph.add_edge(
+        from_,
+        to_,
+        **kwargs
+    )
+    graph.graph['path'].append(to_)
 
 
 def next_node(graph, current, explored):
@@ -111,13 +138,28 @@ def eta(graph, r, s):
     return 1.0 / (graph[r][s]['weight'])
 
 
-def edges_by_weight():
-    return lambda x: sum([t[2]['weight'] for t in x.edges(data='weight')])
+def edges_by_total_cost():
+    return lambda x: total_cost(x)
 
 
 def edges_by_tau(graph):
     return lambda t: tau(graph, t[0], t[1]) * eta(graph, t[0], t[1]) ** BETA
 
 
+def total_cost(graph):
+    return sum([t[2]['weight'] for t in graph.edges(data='weight')])
+
+
 def order_capacity(graph, node):
     return graph.node[node][Order.CAPACITY]
+
+
+def _get_edge_attr(graph, edge_tuple, attr):
+    return graph[edge_tuple[0]][edge_tuple[1]][attr]
+
+
+def get_weight(graph, edge):
+    return _get_edge_attr(graph, edge, WEIGHT)
+
+def get_pheromone(graph, edge):
+    return _get_edge_attr(graph, edge, PHEROMONE)

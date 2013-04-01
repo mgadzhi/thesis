@@ -10,4 +10,4 @@ class Command(BaseCommand):
         vs = Vehicle.get_all_vehicles_with_full_tanks()
         start = Station.objects.get(id=1)
 
-        print solve_vrp(g, start, vs)
+        print solve_vrp(g, start, vs, iter_num=1)
