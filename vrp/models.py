@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from vrp.utils import euclidean_metric
+from vrp.errors import VehiclePouringError
 import networkx as nx
 
 # Create your models here.
-from vrp.utils import euclidean_metric
-from vrp.errors import VehiclePouringError
-
 
 class Depot(models.Model):
     x = models.IntegerField()
@@ -24,6 +23,17 @@ class Station(models.Model):
         u"""Euclidean metric"""
         return euclidean_metric((a.x, b.x), (a.y, b.y))
 
+    @classmethod
+    def get_or_create(cls, x, y):
+        try:
+            station = cls.objects.get(x=x, y=y)
+        except Station.DoesNotExist:
+            station = cls()
+            station.x = x
+            station.y = y
+            station.save()
+        return station
+
 
 class Edge(models.Model):
     
@@ -38,17 +48,15 @@ class Edge(models.Model):
                 station1 = Station.objects.get(id=station1)
             if isinstance(station2, int):
                 station2 = Station.objects.get(id=station2)
-        except DoesNotExist as e:
+        except DoesNotExist:
             return None
-
-        edges = cls.objects.filter(station1=station1, station2=station2)
-        if not edges:
+        try:
+            edge = cls.objects.get(station1=station1, station2=station2)
+        except DoesNotExist:
             edge = cls()
             edge.station1 = station1
             edge.station2 = station2
             edge.save()
-        else:
-            edge = edges[0]
         return edge
 
     def nodes(self):

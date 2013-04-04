@@ -160,3 +160,7 @@ LOGGING = {
         },
     }
 }
+
+
+VRP_INSTANCES_DIR = 'vrp/vrp-instances/instances/'
+VRP_OPT_SOLUTIONS_DIR = 'vrp/vrp-instances/optimal-solutions/'
