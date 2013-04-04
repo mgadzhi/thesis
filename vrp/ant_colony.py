@@ -59,6 +59,25 @@ def solve_vrp(graph, start, vehicles, iter_num=10):
     return sorted(best_paths, key=edges_by_total_cost())[0]
 
 
+def traverse(graph, vehicle, start, explored=None):
+    if explored is None:
+        explored = nx.Graph()
+    current = start
+    while not vehicle.is_empty():
+        nxt = next_node(graph, current, explored)
+        move_to(explored, current, nxt, **{
+            WEIGHT: get_weight(graph, (current, nxt)),
+            PHEROMONE: get_pheromone(graph, (current, nxt))
+        })
+        vehicle.pour_off_or_empty(order_capacity(graph, current))
+        current = nxt
+    move_to(explored, current, start, **{
+        WEIGHT: get_weight(graph, (current, start)),
+        PHEROMONE: get_pheromone(graph, (current, start))
+    })
+    return explored
+
+
 #TODO: Refactor this non-pure function
 def move_to(graph, from_, to_, **kwargs):
     graph.add_edge(

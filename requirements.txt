@@ -1,0 +1,7 @@
+Django==1.5c1
+argparse==1.2.1
+ipython==0.13.1
+matplotlib==1.2.0
+networkx==1.7
+numpy==1.7.0
+wsgiref==0.1.2

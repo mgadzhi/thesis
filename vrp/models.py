@@ -8,6 +8,11 @@ from thesis.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
 
 
+class Depot(models.Model):
+    x = models.IntegerField()
+    y = models.IntegerField()
+
+
 class Station(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
