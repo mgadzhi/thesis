@@ -1,5 +1,5 @@
 import random
-from thesis import utils
+from vrp import utils
 
 __author__ = 'gadzhi'
 

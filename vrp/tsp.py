@@ -1,6 +1,5 @@
 import networkx as nx
-import time
-from thesis.utils import another
+from vrp.utils import another
 
 
 class Solver(object):

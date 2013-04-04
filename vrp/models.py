@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-import math
 import networkx as nx
 
 # Create your models here.
-from thesis.utils import euclidean_metric
+from vrp.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
 
 
@@ -93,15 +92,6 @@ class Vehicle(models.Model):
     max_capacity = models.IntegerField()
 
     capacity = 0
-
-    def traverse(self, graph, start=None):
-        if start is None:
-            start = graph.nodes(data='start')[0]  # Assuming that only one node has attribute 'start'
-
-        current = start
-        explored = nx.Graph()
-        while explored.nodes() != graph.nodes():
-            pass
 
     def get_capacity(self):
         return self.capacity

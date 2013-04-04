@@ -1,9 +1,10 @@
-import logging
-from thesis.utils import another
+# -*- coding: utf-8 -*-
 
-import networkx as nx
-import random
+from vrp.utils import another
 from vrp.models import Order
+
+import random
+import networkx as nx
 
 
 PHEROMONE = 'pheromone_level'
