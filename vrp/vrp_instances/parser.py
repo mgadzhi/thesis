@@ -43,6 +43,6 @@ def parse_vrp_instance(filename):
         return instance
 
 
-def build_map_from_instance(filename):
+def clients_map_from_instance(filename):
     nodes = parse_vrp_instance(filename)['nodes']
     return complete_map([Station.get_or_create(node['x'], node['y']) for node in nodes])

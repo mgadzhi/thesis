@@ -24,7 +24,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'vrp',                      # Or path to database file if using sqlite3.
         'USER': 'gadzhi',                      # Not used with sqlite3.
-        'PASSWORD': 'NobodyCares',                  # Not used with sqlite3.
+        'PASSWORD': 'SecurityIsImportantTheySay',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'vrp',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -162,5 +163,5 @@ LOGGING = {
 }
 
 
-VRP_INSTANCES_DIR = 'vrp/vrp-instances/instances/'
-VRP_OPT_SOLUTIONS_DIR = 'vrp/vrp-instances/optimal-solutions/'
+VRP_INSTANCES_DIR = 'vrp/vrp_instances/instances/'
+VRP_OPT_SOLUTIONS_DIR = 'vrp/vrp_instances/optimal-solutions/'

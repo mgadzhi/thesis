@@ -6,17 +6,14 @@ import networkx as nx
 
 # Create your models here.
 
-class Depot(models.Model):
+
+class MapNode(models.Model):
+
     x = models.IntegerField()
     y = models.IntegerField()
 
-
-class Station(models.Model):
-    x = models.IntegerField()
-    y = models.IntegerField()
-
-    def __str__(self):
-        return '%s: (%s, %s)' % (self.id, self.x, self.y)
+    class Meta:
+        abstract = True
 
     @classmethod
     def distance(cls, a, b):
@@ -33,6 +30,16 @@ class Station(models.Model):
             station.y = y
             station.save()
         return station
+    
+
+class Depot(MapNode):
+    pass
+
+
+class Station(MapNode):
+
+    def __str__(self):
+        return '%s: (%s, %s)' % (self.id, self.x, self.y)
 
 
 class Edge(models.Model):

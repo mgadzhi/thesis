@@ -97,9 +97,6 @@ def next_node(graph, current, explored):
                 if another(e, current) not in explored],
             key=edges_by_tau(graph)
         )
-        # print explored.edges()
-        # print current
-        # print edges
         return another(edges[-1], current)
     else:
         return random_neighbour(graph, current, explored)

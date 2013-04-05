@@ -3,6 +3,7 @@ from vrp import models
 
 __author__ = 'gadzhi'
 
+admin.site.register(models.Depot)
 admin.site.register(models.Station)
 admin.site.register(models.Edge)
 admin.site.register(models.Network)
