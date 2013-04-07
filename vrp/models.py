@@ -30,13 +30,21 @@ class MapNode(models.Model):
             station.y = y
             station.save()
         return station
-    
+
 
 class Depot(MapNode):
     pass
 
 
 class Station(MapNode):
+
+    _demand = 0
+
+    def get_demand(self):
+        return self._demand
+
+    def set_demand(self, value):
+        self._demand = value
 
     def __str__(self):
         return '%s: (%s, %s)' % (self.id, self.x, self.y)
@@ -175,7 +183,7 @@ class Order(models.Model):
     STATUS_EXECUTING = 'executing'
     STATUS_FINISHED = 'finished'
 
-    CAPACITY = 'capacity'
+    DEMAND = 'demand'
 
     @classmethod
     def get_by_status(cls, status):

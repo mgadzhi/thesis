@@ -42,7 +42,7 @@ def solve_vrp(graph, start, vehicles, iter_num=10):
                     WEIGHT: get_weight(graph, (current, nxt)),
                     PHEROMONE: get_pheromone(graph, (current, nxt)),
                 })
-                v.pour_off_or_empty(order_capacity(graph, current))
+                v.pour_off_or_empty(order_demand(graph, current))
                 current = nxt
             #When the loop's finished we must manually add an edge
             #from the last explored node to the start
@@ -51,10 +51,6 @@ def solve_vrp(graph, start, vehicles, iter_num=10):
                 WEIGHT: get_weight(graph, (last, start)),
                 PHEROMONE: get_pheromone(graph, (last, start)),
             })
-            print '-' * 42
-            print explored.graph['path']
-            print total_cost(explored)
-            print '-' * 42
             best_paths.append(explored)
 
     return sorted(best_paths, key=edges_by_total_cost())[0]
@@ -62,7 +58,8 @@ def solve_vrp(graph, start, vehicles, iter_num=10):
 
 def traverse(graph, vehicle, start, explored=None):
     if explored is None:
-        explored = nx.Graph()
+        explored = nx.Graph(path=[start])
+        explored.add_node(start)
     current = start
     while not vehicle.is_empty():
         nxt = next_node(graph, current, explored)
@@ -70,7 +67,7 @@ def traverse(graph, vehicle, start, explored=None):
             WEIGHT: get_weight(graph, (current, nxt)),
             PHEROMONE: get_pheromone(graph, (current, nxt))
         })
-        vehicle.pour_off_or_empty(order_capacity(graph, current))
+        vehicle.pour_off_or_empty(order_demand(graph, current))
         current = nxt
     move_to(explored, current, start, **{
         WEIGHT: get_weight(graph, (current, start)),
@@ -167,8 +164,8 @@ def total_cost(graph):
     return sum([t[2]['weight'] for t in graph.edges(data='weight')])
 
 
-def order_capacity(graph, node):
-    return graph.node[node][Order.CAPACITY]
+def order_demand(graph, node):
+    return graph.node[node][Order.DEMAND]
 
 
 def _get_edge_attr(graph, edge_tuple, attr):
