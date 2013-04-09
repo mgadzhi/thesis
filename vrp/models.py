@@ -123,7 +123,7 @@ class Vehicle(models.Model):
         self.capacity = value
 
     def is_full(self):
-        return self.capacity == self.max_capacity
+        return self.capacity == self.max_capacitynxt
 
     def is_empty(self):
         return self.capacity == 0
@@ -170,6 +170,9 @@ class Vehicle(models.Model):
         d = self.max_capacity - self.get_capacity()
         self.set_capacity(self.max_capacity)
         return d
+
+    def __str__(self):
+        return str(self.id)
 
 
 class Order(models.Model):

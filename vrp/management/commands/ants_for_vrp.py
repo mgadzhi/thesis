@@ -3,7 +3,7 @@
 import os
 from django.conf import settings
 from django.core.management import BaseCommand
-from vrp.ant_colony import solve_vrp, traverse, init_with_pheromones
+from vrp.ant_colony import solve_vrp, traverse, init_with_pheromones, total_cost
 from vrp.complete_graph import CompleteGraph
 from vrp.models import load_orders_map_by_id, Vehicle, Station, Depot, MapNode
 from vrp.vrp_instances import parser
@@ -24,7 +24,8 @@ class Command(BaseCommand):
         )
         graph = init_with_pheromones(graph)
         vehicles = Vehicle.get_all_vehicles_with_full_tanks()
-        for v in vehicles:
-            print traverse(graph, v, depot).graph['path']
-        # print solve_vrp(graph, depot, vehicles)
+        solution = solve_vrp(graph, depot, vehicles)
+        for k, v in solution.graph['paths'].iteritems():
+            print k.id, v
+        print total_cost(solution)
         print 'Ok'

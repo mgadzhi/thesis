@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from vrp.errors import NotEnoughVehiclesError
 
 from vrp.utils import another
 from vrp.models import Order
@@ -19,71 +20,42 @@ TAU0 = 1.0 / 400
 #I'll keep an order in which a graph is traversed as a graph attribute path.
 
 
-def solve_vrp(graph, start, vehicles, iter_num=10):
+def solve_vrp(graph, start, vehicles, iter_num=1000):
     graph = init_with_pheromones(graph)
-    best_paths = []
-
+    best_solution = graph
     for i_ in xrange(iter_num):
+        explored = nx.Graph(paths={})
         for v in vehicles:
-            current = start
-            explored = nx.Graph(path=[current])
-            while explored.nodes() != graph.nodes():
-                #If vehicle's tank is empty, we must return to the start
-                if v.is_empty():
-                    move_to(explored, current, start, **{
-                        WEIGHT: get_weight(graph, (current, start)),
-                        PHEROMONE: get_pheromone(graph, (current, start)),
-                    })
-                    current = start
-                    v.fill()
-                    continue
-                nxt = next_node(graph, current, explored)
-                move_to(explored, current, nxt, **{
-                    WEIGHT: get_weight(graph, (current, nxt)),
-                    PHEROMONE: get_pheromone(graph, (current, nxt)),
-                })
-                v.pour_off_or_empty(order_demand(graph, current))
-                current = nxt
-            #When the loop's finished we must manually add an edge
-            #from the last explored node to the start
-            last = explored.graph['path'][-1]
-            move_to(explored, last, start, **{
-                WEIGHT: get_weight(graph, (last, start)),
-                PHEROMONE: get_pheromone(graph, (last, start)),
-            })
-            best_paths.append(explored)
+            explored.add_node(start)
+            explored.graph['paths'][v] = [start]
+            v.fill()
+            explored = traverse(graph, v, start, explored)
+            if explored.number_of_nodes() == graph.number_of_nodes():
+                best_solution = better_solution(best_solution, explored)
+                break
+        if explored.number_of_nodes() != graph.number_of_nodes():
+            raise NotEnoughVehiclesError()
 
-    return sorted(best_paths, key=edges_by_total_cost())[0]
+    return best_solution
 
 
 def traverse(graph, vehicle, start, explored=None):
     if explored is None:
-        explored = nx.Graph(path=[start])
+        explored = nx.Graph(paths={vehicle: [start]})
         explored.add_node(start)
     current = start
-    while not vehicle.is_empty():
-        nxt = next_node(graph, current, explored)
-        move_to(explored, current, nxt, **{
-            WEIGHT: get_weight(graph, (current, nxt)),
-            PHEROMONE: get_pheromone(graph, (current, nxt))
-        })
+    while not vehicle.is_empty() and explored.number_of_nodes() != graph.number_of_nodes():
+        try:
+            nxt = next_node(graph, current, explored)
+        except Exception, e:
+            raise e
+        explored.add_edge(current, nxt, weight=get_weight(graph, (current, nxt)))
+        explored.graph['paths'][vehicle].append(nxt)
         vehicle.pour_off_or_empty(order_demand(graph, current))
         current = nxt
-    move_to(explored, current, start, **{
-        WEIGHT: get_weight(graph, (current, start)),
-        PHEROMONE: get_pheromone(graph, (current, start))
-    })
+    graph.add_edge(current, start, weight=get_weight(graph, (current, start)))
+    explored.graph['paths'][vehicle].append(start)
     return explored
-
-
-#TODO: Refactor this non-pure function
-def move_to(graph, from_, to_, **kwargs):
-    graph.add_edge(
-        from_,
-        to_,
-        **kwargs
-    )
-    graph.graph['path'].append(to_)
 
 
 def next_node(graph, current, explored):
@@ -108,7 +80,7 @@ def random_neighbour(graph, current, explored):
 
 
 def neighb_distribution(graph, current, explored):
-    neighbs = [n for n in graph.neighbors(current) if n not in explored]
+    neighbs = [n for n in graph.neighbors(current) if n not in explored.nodes()]
     total = 0
     distr = {}
     for node in neighbs:
@@ -175,5 +147,10 @@ def _get_edge_attr(graph, edge_tuple, attr):
 def get_weight(graph, edge):
     return _get_edge_attr(graph, edge, WEIGHT)
 
+
 def get_pheromone(graph, edge):
     return _get_edge_attr(graph, edge, PHEROMONE)
+
+
+def better_solution(solution1, solution2):
+    return solution1 if total_cost(solution1) < total_cost(solution2) else solution2

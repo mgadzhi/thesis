@@ -13,11 +13,11 @@ def parse_vrp_instance(filename):
             instance['nodes'] = []
             n = int(instance['NAME'].split('-')[1][1:])  #Узнаем n - количество вершин.
             for i_ in xrange(n):
-                id_, x, y = next(f).split()
+                id_, x, y = (int(s) for s in next(f).split())
                 instance['nodes'].append(Station.get_or_create(x, y))
             assert next(f).strip() == 'DEMAND_SECTION'
             for i in xrange(n):
-                demand = next(f).split()[1]
+                demand = int(next(f).split()[1])
                 instance['nodes'][i].set_demand(demand)
         except Exception, e:
             print e
