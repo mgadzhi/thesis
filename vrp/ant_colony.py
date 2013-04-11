@@ -10,10 +10,10 @@ import networkx as nx
 
 PHEROMONE = 'pheromone_level'
 WEIGHT = 'weight'
-ALPHA = 0.5
-BETA = 0.5
-Q0 = 0.5
-TAU0 = 1.0 / 400
+ALPHA = 0.8
+BETA = 0.8
+Q0 = 0.9
+TAU0 = 1.0 / 784
 
 
 #For all the functions: 'explored' is the nx.Graph object
@@ -35,6 +35,11 @@ def solve_vrp(graph, start, vehicles, iter_num=1000):
                 break
         if explored.number_of_nodes() != graph.number_of_nodes():
             raise NotEnoughVehiclesError()
+        for edge in explored.edges():
+            graph = local_pheromone_update(graph, edge)
+        best_length = total_cost(best_solution)
+        for edge in best_solution.edges():
+            global_pheromone_update(graph, edge, best_length)
 
     return best_solution
 
@@ -45,15 +50,12 @@ def traverse(graph, vehicle, start, explored=None):
         explored.add_node(start)
     current = start
     while not vehicle.is_empty() and explored.number_of_nodes() != graph.number_of_nodes():
-        try:
-            nxt = next_node(graph, current, explored)
-        except Exception, e:
-            raise e
+        nxt = next_node(graph, current, explored)
         explored.add_edge(current, nxt, weight=get_weight(graph, (current, nxt)))
         explored.graph['paths'][vehicle].append(nxt)
         vehicle.pour_off_or_empty(order_demand(graph, current))
         current = nxt
-    graph.add_edge(current, start, weight=get_weight(graph, (current, start)))
+    explored.add_edge(current, start, weight=get_weight(graph, (current, start)))
     explored.graph['paths'][vehicle].append(start)
     return explored
 
@@ -111,6 +113,13 @@ def local_pheromone_update(graph, edge):
     a, b = edge
     old = graph[a][b][PHEROMONE]
     graph[a][b][PHEROMONE] = (1 - ALPHA) * old + TAU0
+    return graph
+
+
+def global_pheromone_update(graph, edge, length):
+    a, b = edge
+    old = graph[a][b][PHEROMONE]
+    graph[a][b][PHEROMONE] = (1 - ALPHA) * old + (ALPHA / length)
 
 
 def tau(graph, r, s):
