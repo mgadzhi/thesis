@@ -20,23 +20,25 @@ TAU0 = 1.0 / 784
 #I'll keep an order in which a graph is traversed as a graph attribute path.
 
 
-def solve_vrp(graph, start, vehicles, iter_num=1000):
+def solve_vrp(graph, start, ants, iter_num=1000):
     graph = init_with_pheromones(graph)
     best_solution = graph
     for i_ in xrange(iter_num):
         explored = nx.Graph(paths={})
-        for v in vehicles:
+        for ant in ants:
             explored.add_node(start)
-            explored.graph['paths'][v] = [start]
-            v.fill()
-            explored = traverse(graph, v, start, explored)
+            explored.graph['paths'][ant] = [start]
+            ant.fill()
+            explored = traverse(graph, ant, start, explored)
             if explored.number_of_nodes() == graph.number_of_nodes():
                 best_solution = better_solution(best_solution, explored)
+                # print total_cost(best_solution)
                 break
         if explored.number_of_nodes() != graph.number_of_nodes():
             raise NotEnoughVehiclesError()
-        for edge in explored.edges():
-            graph = local_pheromone_update(graph, edge)
+        for edge in graph.edges():
+            local_pheromone_update(graph, edge)
+        # print [round(t[2][PHEROMONE], 5) for t in graph.edges(data=PHEROMONE)]
         best_length = total_cost(best_solution)
         for edge in best_solution.edges():
             global_pheromone_update(graph, edge, best_length)
@@ -44,19 +46,20 @@ def solve_vrp(graph, start, vehicles, iter_num=1000):
     return best_solution
 
 
-def traverse(graph, vehicle, start, explored=None):
+def traverse(graph, ant, start, explored=None):
     if explored is None:
-        explored = nx.Graph(paths={vehicle: [start]})
+        explored = nx.Graph(paths={ant: [start]})
         explored.add_node(start)
     current = start
-    while not vehicle.is_empty() and explored.number_of_nodes() != graph.number_of_nodes():
+    while not ant.is_empty() and explored.number_of_nodes() != graph.number_of_nodes():
         nxt = next_node(graph, current, explored)
         explored.add_edge(current, nxt, weight=get_weight(graph, (current, nxt)))
-        explored.graph['paths'][vehicle].append(nxt)
-        vehicle.pour_off_or_empty(order_demand(graph, current))
+        explored.graph['paths'][ant].append(nxt)
+        ant.pour_off_or_empty(nxt.demand)
+        print 'Ant: {}, capacity: {}'.format(ant, ant.capacity)
         current = nxt
     explored.add_edge(current, start, weight=get_weight(graph, (current, start)))
-    explored.graph['paths'][vehicle].append(start)
+    explored.graph['paths'][ant].append(start)
     return explored
 
 
@@ -112,8 +115,7 @@ def init_with_pheromones(graph):
 def local_pheromone_update(graph, edge):
     a, b = edge
     old = graph[a][b][PHEROMONE]
-    graph[a][b][PHEROMONE] = (1 - ALPHA) * old + TAU0
-    return graph
+    graph[a][b][PHEROMONE] = (1 - ALPHA) * old + ALPHA * TAU0
 
 
 def global_pheromone_update(graph, edge, length):
@@ -138,16 +140,11 @@ def edges_by_total_cost():
 
 
 def edges_by_tau(graph):
-    return lambda t: tau(graph, t[0], t[1]) * eta(graph, t[0], t[1]) ** BETA
+    return lambda t: tau(graph, t[0], t[1]) * (eta(graph, t[0], t[1]) ** BETA)
 
 
 def total_cost(graph):
     return sum([t[2]['weight'] for t in graph.edges(data='weight')])
-
-
-def order_demand(graph, node):
-    return graph.node[node][Order.DEMAND]
-
 
 def _get_edge_attr(graph, edge_tuple, attr):
     return graph[edge_tuple[0]][edge_tuple[1]][attr]

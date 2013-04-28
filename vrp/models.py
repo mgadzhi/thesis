@@ -24,7 +24,7 @@ class MapNode(models.Model):
     def get_or_create(cls, x, y):
         try:
             station = cls.objects.get(x=x, y=y)
-        except Station.DoesNotExist:
+        except cls.DoesNotExist:
             station = cls()
             station.x = x
             station.y = y
@@ -33,7 +33,9 @@ class MapNode(models.Model):
 
 
 class Depot(MapNode):
-    pass
+
+    def get_demand(self):
+        return 0
 
 
 class Station(MapNode):
@@ -123,7 +125,7 @@ class Vehicle(models.Model):
         self.capacity = value
 
     def is_full(self):
-        return self.capacity == self.max_capacitynxt
+        return self.capacity == self.max_capacity
 
     def is_empty(self):
         return self.capacity == 0

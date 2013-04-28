@@ -23,7 +23,7 @@ class CompleteGraph(nx.Graph):
             dist = lambda x, y: 0
         graph = cls()
         for c in clients:
-            graph.add_node(c, demand=c.get_demand())
+            graph.add_node(c, demand=c.demand)
         graph.add_node(depot, demand=0)
         for x, y in itertools.permutations(graph.nodes(), 2):
             graph.add_edge(
