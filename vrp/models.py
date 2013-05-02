@@ -7,7 +7,7 @@ import networkx as nx
 # Create your models here.
 
 
-class MapNode(models.Model):
+class MapNode(models.Model, ):
 
     x = models.IntegerField()
     y = models.IntegerField()
@@ -20,36 +20,13 @@ class MapNode(models.Model):
         u"""Euclidean metric"""
         return euclidean_metric((a.x, b.x), (a.y, b.y))
 
-    @classmethod
-    def get_or_create(cls, x, y):
-        try:
-            station = cls.objects.get(x=x, y=y)
-        except cls.DoesNotExist:
-            station = cls()
-            station.x = x
-            station.y = y
-            station.save()
-        return station
-
 
 class Depot(MapNode):
-
-    def get_demand(self):
-        return 0
+    pass
 
 
 class Station(MapNode):
-
-    _demand = 0
-
-    def get_demand(self):
-        return self._demand
-
-    def set_demand(self, value):
-        self._demand = value
-
-    def __str__(self):
-        return str(self.id)
+    pass
 
 
 class Edge(models.Model):
