@@ -56,7 +56,7 @@ def traverse(graph, ant, start, explored=None):
         explored.add_edge(current, nxt, weight=get_weight(graph, (current, nxt)))
         explored.graph['paths'][ant].append(nxt)
         ant.pour_off_or_empty(nxt.demand)
-        print 'Ant: {}, capacity: {}'.format(ant, ant.capacity)
+        # print 'Ant: {}, capacity: {}'.format(ant, ant.capacity)
         current = nxt
     explored.add_edge(current, start, weight=get_weight(graph, (current, start)))
     explored.graph['paths'][ant].append(start)

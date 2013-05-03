@@ -31,7 +31,7 @@ class Command(BaseCommand):
             Ant(4, 100),
             Ant(5, 100),
         ]
-        solution = solve_vrp(graph, depot, ants, iter_num=1)
+        solution = solve_vrp(graph, depot, ants, iter_num=10000)
         for k, v in solution.graph['paths'].iteritems():
             print k.id, v
         print total_cost(solution)
