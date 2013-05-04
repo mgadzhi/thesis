@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from vrp.solver_models_mixins import GraphNode
 from vrp.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
 import networkx as nx
@@ -7,7 +8,11 @@ import networkx as nx
 # Create your models here.
 
 
-class MapNode(models.Model, ):
+class MapNode(models.Model, GraphNode):
+
+    def __init__(self, x, y, id_=None, demand=0):
+        super(models.Model, self).__init__(x=x, y=y, demand=demand)
+        super(GraphNode, self).__init__(x, y, id_=self.id, demand=demand)
 
     x = models.IntegerField()
     y = models.IntegerField()
@@ -42,11 +47,11 @@ class Edge(models.Model):
                 station1 = Station.objects.get(id=station1)
             if isinstance(station2, int):
                 station2 = Station.objects.get(id=station2)
-        except DoesNotExist:
+        except cls.DoesNotExist:
             return None
         try:
             edge = cls.objects.get(station1=station1, station2=station2)
-        except DoesNotExist:
+        except cls.DoesNotExist:
             edge = cls()
             edge.station1 = station1
             edge.station2 = station2

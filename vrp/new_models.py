@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from vrp.solver_models_mixins import GraphNode
 from vrp.utils import euclidean_metric
 
 
@@ -46,37 +47,11 @@ class Ant(object):
         return unicode(self)
 
 
-class GraphNode(object):
-
-    def __init__(self, id_, x, y, demand=0):
-        self._id = id_
-        self.x = x
-        self.y = y
-        self._demand = demand
-
-    @classmethod
-    def distance(cls, a, b):
-        u"""Euclidean metric"""
-        return euclidean_metric((a.x, b.x), (a.y, b.y))
-
-    @property
-    def id(self):
-        return self._id
-
-    @property
-    def demand(self):
-        return self._demand
-
-    @demand.setter
-    def demand(self, d):
-        self._demand = d
-
-
 class Depot(GraphNode):
 
-    def __init__(self, id_, x, y, demand=0):
+    def __init__(self, x, y, id_=None, demand=0):
         assert demand == 0, "Depot's demand must be 0"
-        super(Depot, self).__init__(id_, x, y)
+        super(Depot, self).__init__(x, y, id_=id_)
 
     def __unicode__(self):
         return u'Depot<{}>'.format(self.id)

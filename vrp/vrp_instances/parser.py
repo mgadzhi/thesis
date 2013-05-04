@@ -12,14 +12,14 @@ def parse_vrp_instance(filename):
                 instance[k] = v
             assert next(f).strip() == 'NODE_COORD_SECTION'
             instance['nodes'] = []
-            n = int(instance['NAME'].split('-')[1][1:])  #Узнаем n - количество вершин.
+            n = int(instance['NAME'].split('-')[1][1:])  # Узнаем n - количество вершин.
             #Parse depot - node with id 0.
             id_, x, y = (int(s) for s in next(f).split())
-            depot = Depot(id_, x, y)
+            depot = Depot(x, y, id_=id_)
             #Parse stations
             for i_ in xrange(n - 1):
                 id_, x, y = (int(s) for s in next(f).split())
-                instance['nodes'].append(Station(id_, x, y))
+                instance['nodes'].append(Station(x, y, id_=id_))
             assert next(f).strip() == 'DEMAND_SECTION'
             #We don't need demand for depot
             assert int(next(f).split()[1]) == 0
