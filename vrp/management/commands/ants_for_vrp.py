@@ -7,7 +7,7 @@ from django.core.management import BaseCommand
 from vrp.ant_colony import solve_vrp, traverse, init_with_pheromones, total_cost
 from vrp.complete_graph import CompleteGraph
 from vrp.models import load_orders_map_by_id, Vehicle, Station, Depot, MapNode
-from vrp.new_models import GraphNode, Ant
+from vrp.vrp_instances.models import GraphNode, Ant
 from vrp.vrp_instances import parser
 
 
