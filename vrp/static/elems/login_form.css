@@ -1,0 +1,11 @@
+
+.login_form form ul {
+    list-style-type: none;
+}
+
+.login_form form ul li span.left {
+    float: left;
+}
+.login_form ul li span.right {
+    float: right;
+}

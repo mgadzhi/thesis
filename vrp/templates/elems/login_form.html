@@ -1,0 +1,15 @@
+
+
+<div class="login_form">
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+        <ul>
+            <li>{{ form.username.label_tag }}</li>
+            <li>{{ form.username }}</li>
+            <li>{{ form.password.label_tag }}</li>
+            <li>{{ form.password }}</li>
+        </ul>
+        <input type="hidden" name="next" value="{{ next }}"/>
+        <input type="submit" value="Sign in" />
+    </form>
+</div>

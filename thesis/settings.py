@@ -1,4 +1,5 @@
 # Django settings for thesis project.
+from django.core.urlresolvers import reverse
 import warnings
 import exceptions
 
@@ -165,3 +166,6 @@ LOGGING = {
 
 VRP_INSTANCES_DIR = 'vrp/vrp_instances/instances/'
 VRP_OPT_SOLUTIONS_DIR = 'vrp/vrp_instances/optimal-solutions/'
+
+LOGIN_URL = '/signin/'
+LOGIN_REDIRECT_URL = '/'
