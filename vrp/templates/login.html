@@ -10,6 +10,9 @@
 {% endblock authenticate %}
 
 {% block content %}
+    {% if form.errors %}
+        <p>Login and password did't match. Try again.</p>
+    {% endif %}
     <h1>Login</h1>
     {% include "elems/login_form.html" %}
 {% endblock %}
