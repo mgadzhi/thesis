@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'vrp',
+    'users',
     'south',
 )
 
@@ -169,3 +170,5 @@ VRP_OPT_SOLUTIONS_DIR = 'vrp/vrp_instances/optimal-solutions/'
 
 LOGIN_URL = '/signin/'
 LOGIN_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'users.User'
