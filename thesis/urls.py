@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^$', views.index),
     url(r'^signin/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^signout/$', 'django.contrib.auth.views.logout_then_login'),
+    url(r'^api/', include('users.urls'))
 )
