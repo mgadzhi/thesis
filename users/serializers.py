@@ -15,5 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
             'email',
             'user_type',
+            'reseller',
             'agents',
         )

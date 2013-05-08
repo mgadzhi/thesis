@@ -9,3 +9,7 @@
 .login_form ul li span.right {
     float: right;
 }
+
+ul.unstyled {
+    list-style-type: none;
+}

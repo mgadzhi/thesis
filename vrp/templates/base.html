@@ -1,18 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load staticfiles %}
     <title>{% block title %}{% endblock title %}</title>
     {% block extrahead %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+        <link href="{% static 'bootstrap/css/bootstrap-responsive.min.css' %}" rel="stylesheet" media="screen">
+
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+        <link rel="stylesheet" type="text/css" href="{% static 'elems/login_form.css' %}" />
     {% endblock extrahead %}
 </head>
 <body>
-    {% block authenticate %}
-        {%  if user.is_authenticated %}
-            {{ user }} <a href="/signout/">Sign out</a>
-        {% else %}
-            <a href="/signin/">Sign in</a>
-        {% endif %}
-    {% endblock authenticate %}
+    {% block navbar %}
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="#">Title</a>
+                <ul class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                    {%  if user.is_authenticated %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                {{ user }}
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/signout/">Sign out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="/signin/">Sign in</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    {% endblock navbar %}
+
     {% if errors %}
         <ul>
             {% for error in errors %}
