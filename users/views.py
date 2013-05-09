@@ -1,67 +1,44 @@
 # Create your views here.
+import datetime
 from django.contrib.auth import get_user_model
-from django.http import Http404
-from rest_framework import status, mixins, generics, permissions as rest_permissions, renderers
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from users.serializers import UserSerializer
-from users import permissions
+from rest_framework import viewsets, permissions
+from users import permissions as users_permissions, serializers
 
 
 User = get_user_model()
 
 
-class UserList(mixins.ListModelMixin,
-               mixins.CreateModelMixin,
-               generics.GenericAPIView):
-
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
     permission_classes = (
-        rest_permissions.IsAuthenticated,
-        permissions.IsUsersReseller,
+        permissions.IsAuthenticated,
+        users_permissions.IsUsersReseller,
     )
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def pre_save(self, obj):
-        obj.reseller = self.request.user
-
-
-class UserDetail(mixins.RetrieveModelMixin,
-                 mixins.UpdateModelMixin,
-                 mixins.DestroyModelMixin,
-                 generics.GenericAPIView):
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class AgentViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.filter(user_type=User.AGENT)
+    serializer_class = serializers.AgentSerializer
     permission_classes = (
-        rest_permissions.IsAuthenticated,
-        permissions.IsUsersReseller,
+        permissions.IsAuthenticated,
+        users_permissions.CanAccessAgent,
     )
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-    def pre_save(self, obj):
-        obj.reseller = self.request.user
+class ResellerViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.filter(user_type=User.RESELLER)
+    serializer_class = serializers.ResellerSerializer
+    permission_classes = (
+        permissions.IsAuthenticated,
+        users_permissions.CanAccessReseller,
+    )
 
 
-class UserView(generics.GenericAPIView):
-    queryset = User.objects.all()
-    renderer_classes = (renderers.TemplateHTMLRenderer, )
-
-    def get(self, request, *args, **kwargs):
-        user = self.get_object()
-        return Response({'subject_user': user}, template_name='user_details.html')
+class AdminViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.filter(user_type=User.ADMIN)
+    serializer_class = serializers.AdminSerializer
+    permissions = (
+        permissions.IsAuthenticated,
+        users_permissions.CanAccessAdmin,
+    )

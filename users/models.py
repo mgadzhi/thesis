@@ -16,7 +16,7 @@ class User(auth.models.AbstractUser):
         (AGENT, 'agent'),
     )
 
-    reseller = models.ForeignKey('self', db_index=True, null=True, default=None, blank=True, related_name='agents')
+    reseller = models.ForeignKey('self', db_index=True, null=True, default=None, related_name='agents')
     user_type = models.CharField(max_length=2, choices=USER_TYPES, default=AGENT)
 
 

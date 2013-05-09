@@ -34,7 +34,7 @@ class UserCreationForm(forms.ModelForm):
 
 class UserChangeForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
-    # user_type = forms.ChoiceField(choices=User.USER_TYPES)
+    user_type = forms.ChoiceField(choices=User.USER_TYPES)
 
     class Meta:
         model = User
@@ -57,7 +57,7 @@ class UserAdmin(admin.ModelAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2')
+            'fields': ('email', 'date_of_birth', 'password')
         }),
     )
 
