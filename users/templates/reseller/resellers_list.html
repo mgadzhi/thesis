@@ -1,7 +1,29 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-
 {% block content %}
-
+    {% if resellers %}
+        <table class="table">
+            <tr>
+                <th>{% trans "Login" %}</th>
+                <th>{% trans "E-mail" %}</th>
+                <th>{% trans "First name" %}</th>
+                <th>{% trans "Last name" %}</th>
+                <th>{% trans "Last login" %}</th>
+            </tr>
+            {% for reseller in resellers %}
+                <tr>
+                    <td>
+                        {% with pk=reseller.id %}
+                            <a href={% url 'users.reseller.views.reseller_details' pk %}>{{ reseller.username }}</a>
+                        {% endwith %}
+                    </td>
+                    <td>{{ reseller.email }}</td>
+                    <td>{{ reseller.first_name }}</td>
+                    <td>{{ reseller.last_name }}</td>
+                    <td>{{ reseller.last_login }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock content %}

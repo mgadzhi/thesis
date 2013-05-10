@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script>
+        $(function () {
+            $('#admin_tabs a:first').tab('show');
+        });
+    </script>
+
+{% endblock extrahead %}
+
+{% block content %}
+    <h1>{% trans "Your agents" %}</h1>
+    <div>
+        <table class="table">
+            <tr>
+                <th>{% trans "Id" %}</th>
+                <th>{% trans "Login" %}</th>
+                <th>{% trans "E-mail" %}</th>
+            </tr>
+            {% for agent in agents %}
+                <tr>
+                    <td>{{ agent.id }}</td>
+                    <td>{{ agent.username }}</td>
+                    <td>{{ agent.email }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
