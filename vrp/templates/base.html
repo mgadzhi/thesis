@@ -41,16 +41,17 @@
             </div>
         </div>
     {% endblock navbar %}
+    <div class="container">
+        {% if errors %}
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    {% if errors %}
-        <ul>
-            {% for error in errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% block content %}
-    {% endblock content %}
+        {% block content %}
+        {% endblock content %}
+    </div>
 </body>
 </html>

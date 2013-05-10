@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
+
 # Create your views here.
-import datetime
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions
 from users import permissions as users_permissions, serializers
