@@ -21,7 +21,7 @@ def admins_list(request):
         })
 
 
-def admin_edit(request, pk):
+def admin_edit(request, admin_pk):
     actor = request.user
     if not any((
         actor.is_superuser,
@@ -34,14 +34,14 @@ def admin_edit(request, pk):
         if admin_form.is_valid():
             return redirect('.')
     else:
-        admin = User.objects.get(pk=pk)
+        admin = User.objects.get(pk=admin_pk)
         admin_form = forms.AdminForm(instance=admin)
         return render(request, 'admin/admin_edit.html', {
             'admin_form': admin_form,
         })
 
 
-def admin_details(request, pk):
+def admin_details(request, admin_pk):
     actor = request.user
     if not any((
         actor.is_superuser,
@@ -49,12 +49,9 @@ def admin_details(request, pk):
     )):
         raise Exception('Permission denied')
 
-    admin = User.objects.get(pk=pk)
+    admin = User.objects.get(pk=admin_pk)
     resellers = User.objects.filter(user_type=User.RESELLER)
     agents = User.objects.filter(user_type=User.AGENT)
-    print resellers
-    print
-    print agents
     return render(request, 'admin/admin_details.html', {
         'admin': admin,
         'resellers': resellers,
