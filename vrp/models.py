@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth import get_user_model
 from django.db import models
 from vrp.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
 import networkx as nx
+
+
+User = get_user_model()
 
 # Create your models here.
 
@@ -156,6 +160,7 @@ class Vehicle(models.Model):
 
 class Order(models.Model):
 
+    agent = models.ForeignKey(User)
     station = models.ForeignKey(Station)
     status = models.CharField(max_length=20)
     creation_date = models.DateTimeField()
