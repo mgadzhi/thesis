@@ -39,14 +39,7 @@ def agent_edit(request):
     if request.method == 'POST':
         agent_form = forms.AgentForm(request.POST, instance=actor)
         if agent_form.is_valid():
-            password = agent_form.cleaned_data['password'].strip()
-            agent = agent_form.save(commit=False)
-            if not password:
-                del agent_form.fields['password']
-                agent_form.save()
-            else:
-                agent.set_password(password)
-                agent.save()
+            agent_form.save()
             return redirect('.')
         else:
             messages.error(request, 'Form is not valid')
