@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Create order here</h1>
+    <form action="." method="POST">
+        <table class="table">
+            {{ order_form.as_table }}
+        </table>
+        <input type="submit" class="btn btn-primary" />
+    </form>
+{% endblock content %}

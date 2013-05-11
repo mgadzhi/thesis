@@ -24,5 +24,4 @@ class AgentForm(forms.ModelForm):
         pwd = self.cleaned_data['raw_password']
         if pwd:
             instance.set_password(pwd)
-            instance.save()
         return instance.save()
