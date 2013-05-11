@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<table class="table">
+    <tr>
+        <th>{% trans "Id" %}</th>
+        <th>{% trans "Login" %}</th>
+        <th>{% trans "E-mail" %}</th>
+        <th>{% trans "User type" %}</th>
+    </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>
+                {% with pk=user.id %}
+                    <a href={% url 'users.admin.views.admin_details' pk %}>{{ user.username }}</a>
+                {% endwith %}
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.get_type }}</td>
+        </tr>
+    {% endfor %}
+</table>

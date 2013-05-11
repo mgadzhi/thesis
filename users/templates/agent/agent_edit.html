@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+{#    <h1>{{ admin.username }}</h1>#}
+    <form action="." method="POST"> {% csrf_token %}
+        <table class="table">
+            {{ agent_form.as_table }}
+        </table>
+        <input type="submit" class="btn btn-primary" />
+    </form>
+{% endblock content %}

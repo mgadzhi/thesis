@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {% if admins %}
+        <table class="table">
+            <tr>
+                <td>{% trans "Login" %}</td>
+                <td>{% trans "E-mail" %}</td>
+                <td>{% trans "First name" %}</td>
+                <td>{% trans "Last name" %}</td>
+                <td>{% trans "Last login" %}</td>
+            </tr>
+            {% for admin in admins %}
+                <tr>
+                    <td>
+                        {% with pk=admin.id %}
+                            <a href={% url 'users.admin.views.admin_details' pk %}>{{ admin.username }}</a>
+                        {% endwith %}
+                    </td>
+                    <td>{{ admin.email }}</td>
+                    <td>{{ admin.first_name }}</td>
+                    <td>{{ admin.last_name }}</td>
+                    <td>{{ admin.last_login }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock content %}

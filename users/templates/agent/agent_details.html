@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {% with user=agent %}
+        {% include 'elems/user_details.html' %}
+    {% endwith %}
+    <a href="edit/" class="btn btn-primary">{% trans "Edit" %}</a>
+{% endblock content %}

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from users.reseller import forms
@@ -14,7 +15,8 @@ def resellers_list(request):
         actor.is_superuser,
         actor.is_admin,
     )):
-        raise Exception('Permission denied')
+        messages.erros("Looks like you're not allowed to see this page")
+        return redirect('/')
     resellers = User.objects.filter(user_type=User.RESELLER)
     print resellers
     return render(request, 'reseller/resellers_list.html', {
@@ -30,8 +32,8 @@ def reseller_edit(request, reseller_pk):
         actor.is_admin,
         actor.is_reseller and actor == reseller
     )):
-        raise Exception('Permission denied')
-
+        messages.erros("Looks like you're not allowed to see this page")
+        return redirect('/')
     if request.method == 'POST':
         reseller_form = forms.ResellerForm(request.POST)
         if reseller_form.is_valid():
@@ -51,7 +53,8 @@ def reseller_details(request, reseller_pk):
         actor.is_admin,
         actor.is_reseller and actor == reseller,
     )):
-        raise Exception('Permission denied')
+        messages.erros("Looks like you're not allowed to see this page")
+        return redirect('/')
 
     agents = User.objects.filter(user_type=User.AGENT)
     return render(request, 'reseller/reseller_details.html', {

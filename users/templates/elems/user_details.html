@@ -1,0 +1,33 @@
+
+{% load i18n %}
+
+<table class="table">
+    <tr>
+        <th>{% trans "Id" %}</th>
+        <th>{% trans "Login" %}</th>
+        <th>{% trans "Email" %}</th>
+        <th>{% trans "First name" %}</th>
+        <th>{% trans "Last name" %}</th>
+        <th>{% trans "Last login" %}</th>
+        <th>{% trans "Date joined" %}</th>
+        <th>
+            {% if user.is_agent %}
+                {% trans "Reseller id" %}
+            {% endif %}
+        </th>
+        <th>{% trans "User type" %}</th>
+    </tr>
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.last_login }}</td>
+        <td>{{ user.date_joined }}</td>
+        {% if user.is_agent %}
+            <td>{{ user.reseller_id }}</td>
+        {% endif %}
+        <td>{{ user.get_type }}</td>
+    </tr>
+</table>
