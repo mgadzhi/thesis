@@ -12,46 +12,8 @@
 {% endblock extrahead %}
 
 {% block content %}
-    <div>
-        <ul class="nav nav-tabs" id="admin_tabs">
-            <li><a href="#resellers" data-toggle="tab">{% trans "Resellers" %}</a></li>
-            <li><a href="#agents" data-toggle="tab">{% trans "Agents" %}</a></li>
-        </ul>
-        <div class="tab-content active">
-            <div class="tab-pane" id="resellers">
-                <table class="table">
-                    <tr>
-                        <th>{% trans "Id" %}</th>
-                        <th>{% trans "Login" %}</th>
-                        <th>{% trans "E-mail" %}</th>
-                    </tr>
-                    {% for reseller in resellers %}
-                        <tr>
-                            <td>{{ reseller.id }}</td>
-                            <td>{{ reseller.username }}</td>
-                            <td>{{ reseller.email }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="tab-pane" id="agents">
-                <table class="table">
-                    <tr>
-                        <th>{% trans "Id" %}</th>
-                        <th>{% trans "Login" %}</th>
-                        <th>{% trans "E-mail" %}</th>
-                        <th>{% trans "Reseller" %}</th>
-                    </tr>
-                    {% for agent in agents %}
-                        <tr>
-                            <td>{{ agent.id }}</td>
-                            <td>{{ agent.username }}</td>
-                            <td>{{ agent.email }}</td>
-                            <td>{{ agent.reseller }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
+    {% with user=admin %}
+        {% include "elems/user_details.html" %}
+    {% endwith %}
+    <a href="edit/" class="btn btn-primary">{% trans "Edit" %}</a>
 {% endblock content %}

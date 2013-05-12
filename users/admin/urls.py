@@ -7,6 +7,8 @@ urlpatterns = patterns(
     '',
     url(r'^$', views.index),
     url(r'^all/$', views.admins_list, name='admins_list'),
+    url(r'^edit/$', views.admin_edit, name='admin_edit'),
     url(r'^(?P<admin_pk>\d+)/edit/$', views.admin_edit, name='admin_edit'),
+    url(r'^/$', views.admin_details, name='admin_details'),
     url(r'^(?P<admin_pk>\d+)/$', views.admin_details, name='admin_details'),
 )

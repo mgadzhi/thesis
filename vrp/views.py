@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from vrp.forms import OrderForm
+from vrp.models import Station
 
 
 def index(request):
@@ -24,4 +25,15 @@ def order_create(request):
     return render(request, 'orders/order_create.html', {
         'agent': actor,
         'order_form': order_form,
+    })
+
+
+def stations_list(request):
+    actor = request.user
+    if not actor.is_admin:
+        messages.error('Only admins are allowed to see this page')
+        return render(request, 'base.html')
+    stations = Station.objects.all()
+    return render(request, 'stations_list.html', {
+        'stations': stations,
     })

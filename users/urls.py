@@ -12,8 +12,6 @@ router.register(r'agents', views.AgentViewSet)
 router.register(r'resellers', views.ResellerViewSet)
 router.register(r'admins', views.AdminViewSet)
 
-print router.urls
-
 urlpatterns = patterns('',
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin_urls)),

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans "Stations" %}</h1>
+    {% if stations %}
+        <table class="table">
+            <tr>
+                <th>{% trans "Id" %}</th>
+                <th>{% trans "Reseller Id" %}</th>
+                <th>{% trans "X" %}</th>
+                <th>{% trans "Y" %}</th>
+            </tr>
+            {% for station in stations %}
+                <tr>
+                    <td>{{ station.id }}</td>
+                    <td>{{ station.reseller_id }}</td>
+                    <td>{{ station.x }}</td>
+                    <td>{{ station.y }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>{% trans "There are no stations yet" %}</h2>
+    {% endif %}
+    <a class="btn btn-primary" href="#">{% trans "Add" %}</a>
+{% endblock content %}

@@ -20,28 +20,27 @@ def admins_list(request):
         actor.is_admin,
     )):
         messages.error(request, "Looks like you're not allowed to see this page")
-        return redirect('/')
+        return render(request, 'base.html')
     admins = User.objects.filter(user_type=User.ADMIN)
     return render(request, 'admin/admins_list.html', {
         'admins': sorted(admins, key=lambda x: x.id),
     })
 
 
-def admin_edit(request, admin_pk):
+def admin_edit(request, admin_pk=None):
     actor = request.user
+    admin = actor if admin_pk is None else User.objects.get(pk=admin_pk)
     if not any((
         actor.is_superuser,
         actor.is_admin,
     )):
         messages.error(request, "Looks like you're not allowed to see this page")
-        return redirect('/')
-
+        return render(request, 'base.html')
     if request.method == 'POST':
         admin_form = forms.AdminForm(request.POST)
         if admin_form.is_valid():
             return redirect('.')
     else:
-        admin = User.objects.get(pk=admin_pk)
         admin_form = forms.AdminForm(instance=admin)
         return render(request, 'admin/admin_edit.html', {
             'admin_form': admin_form,
@@ -56,11 +55,8 @@ def admin_details(request, admin_pk=None):
         actor.is_admin,
     )):
         messages.error(request, "Looks like you're not allowed to see this page")
-        return redirect('/')
-    resellers = User.objects.filter(user_type=User.RESELLER)
-    agents = User.objects.filter(user_type=User.AGENT)
+        # return redirect('/')
+        return render(request, 'base.html')
     return render(request, 'admin/admin_details.html', {
         'admin': admin,
-        'resellers': resellers,
-        'agents': agents,
     })
