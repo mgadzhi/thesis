@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
-from vrp.forms import OrderForm
+from vrp.forms import OrderForm, StationForm
 from vrp.models import Station
 
 
@@ -36,4 +36,20 @@ def stations_list(request):
     stations = Station.objects.all()
     return render(request, 'stations_list.html', {
         'stations': stations,
+    })
+
+
+def station_create(request):
+    actor = request.user
+    if not actor.is_admin:
+        messages.error('Only admins may add new stations')
+    else:
+        if request.method == 'POST':
+            station_form = StationForm(request.POST)
+            if station_form.is_valid():
+                station_form.save()
+        else:
+            station_form = StationForm()
+    return render(request, 'station_create.html', {
+        'station_form': station_form,
     })

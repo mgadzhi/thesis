@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 from django import forms
-from vrp.models import Order
+from vrp.models import Order, Station
 
 
 class OrderForm(forms.ModelForm):
@@ -20,3 +20,9 @@ class OrderForm(forms.ModelForm):
         order.status = Order.STATUS_CREATED
         order.creation_date = datetime.datetime.now()
         return order.save()
+
+
+class StationForm(forms.ModelForm):
+
+    class Meta:
+        model = Station

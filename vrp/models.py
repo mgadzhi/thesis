@@ -30,7 +30,7 @@ class Depot(MapNode):
 
 
 class Station(MapNode):
-    pass
+    reseller = models.ForeignKey(User)
 
 
 class Edge(models.Model):
@@ -190,9 +190,9 @@ class Order(models.Model):
 
 
 def load_orders_map_by_id(id_):
-    map = Network.objects.get(id=id_).get_graph()
+    map_ = Network.objects.get(id=id_).get_graph()
     orders = Order.get_created()
     for order in orders:
-        if map.has_node(order.station):
-            map.node[order.station][Order.CAPACITY] = order.capacity
-    return map
+        if map_.has_node(order.station):
+            map_.node[order.station][Order.CAPACITY] = order.capacity
+    return map_

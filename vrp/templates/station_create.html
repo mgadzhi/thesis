@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <form action="." method="POST">{% csrf_token %}
+        <table class="table">
+            {{ station_form.as_table }}
+        </table>
+        <input type="submit" class="btn btn-primary" value="Create"/>
+    </form>
+    <a class="btn btn-primary" href="..">{% trans "Back to stations list" %}</a>
+{% endblock content %}
