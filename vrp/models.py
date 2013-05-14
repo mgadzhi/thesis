@@ -19,6 +19,7 @@ class MapNode(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = ('x', 'y')
 
     @classmethod
     def distance(cls, a, b):
