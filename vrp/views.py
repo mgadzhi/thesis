@@ -47,7 +47,9 @@ def station_create(request):
         if request.method == 'POST':
             station_form = StationForm(request.POST)
             if station_form.is_valid():
+                messages.success(request, 'New station added')
                 station_form.save()
+                return redirect('..')
         else:
             station_form = StationForm()
     return render(request, 'station_create.html', {
