@@ -1,5 +1,27 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-    <h1>Order creation</h1>
+    <h1>All your orders are here:</h1>
+    <table class="table">
+        <tr>
+            <th>{% trans "Agent Id" %}</th>
+            <th>{% trans "Station" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Creation date" %}</th>
+            <th>{% trans "Capacity" %}</th>
+        </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.agent_id }}</td>
+                <td>{{ order.station }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.creation_date }}</td>
+                <td>{{ order.capacity }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% if actor.is_agent %}
+        <a class="btn btn-primary" href="{% url 'create_order' %}">{% trans "Create new" %}</a>
+    {% endif %}
 {% endblock %}

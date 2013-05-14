@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.db import models
-from users.models import Reseller
+from users.models import Reseller, Agent
 from vrp.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
 import networkx as nx
@@ -33,6 +33,9 @@ class Depot(MapNode):
 
 class Station(MapNode):
     reseller = models.ForeignKey(Reseller)
+
+    def __unicode__(self):
+        return u'Station #{}'.format(self.id)
 
 
 class Edge(models.Model):
@@ -162,7 +165,8 @@ class Vehicle(models.Model):
 
 class Order(models.Model):
 
-    agent = models.ForeignKey(User)
+    agent = models.ForeignKey(Agent)
+    reseller = models.ForeignKey(Reseller)
     station = models.ForeignKey(Station)
     status = models.CharField(max_length=20)
     creation_date = models.DateTimeField()

@@ -42,6 +42,21 @@ class User(auth.models.AbstractUser):
     def get_type(self):
         return self.TYPES_DESCRIPTION[self.user_type]
 
+    def as_admin(self):
+        if not self.is_admin:
+            raise ValueError('{} is not admin'.format(self))
+        return Admin.objects.get(pk=self.id)
+
+    def as_reseller(self):
+        if not self.is_reseller:
+            raise ValueError('{} is not reseller'.format(self))
+        return Reseller.objects.get(pk=self.id)
+
+    def as_agent(self):
+        if not self.is_agent:
+            raise ValueError('{} is not agent'.format(self))
+        return Agent.objects.get(pk=self.id)
+
 
 class AdminManager(models.Manager):
     def get_query_set(self):
@@ -68,3 +83,6 @@ class Reseller(User):
 
 class Agent(User):
     objects = AgentManager()
+
+    def get_reseller(self):
+        return self.agent_reseller.as_reseller()
