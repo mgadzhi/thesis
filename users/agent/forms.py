@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.contrib.auth import get_user_model
+from users.models import Agent
 
 
 User = get_user_model()
@@ -16,7 +17,7 @@ class AgentForm(forms.ModelForm):
     )
 
     class Meta:
-        model = User
+        model = Agent
         fields = ['username', 'raw_password', 'email', 'first_name', 'last_name']
 
     def save(self, commit=True):

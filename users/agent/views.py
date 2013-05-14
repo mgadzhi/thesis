@@ -40,6 +40,7 @@ def agent_edit(request):
         agent_form = forms.AgentForm(request.POST, instance=actor)
         if agent_form.is_valid():
             agent_form.save()
+            messages.success(request, 'Agent has been edited')
             return redirect('.')
         else:
             messages.error(request, 'Form is not valid')

@@ -37,8 +37,15 @@ def admin_edit(request, admin_pk=None):
         messages.error(request, "Looks like you're not allowed to see this page")
         return render(request, 'base.html')
     if request.method == 'POST':
-        admin_form = forms.AdminForm(request.POST)
+        admin_form = forms.AdminForm(request.POST, instance=admin)
         if admin_form.is_valid():
+            admin_form.save()
+            messages.success(request, 'Admin has been edited')
+            return redirect('.')
+        else:
+            messages.error(request, 'Form is not valid')
+            for error in admin_form.errors:
+                messages.error(request, error)
             return redirect('.')
     else:
         admin_form = forms.AdminForm(instance=admin)

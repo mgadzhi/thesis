@@ -3,10 +3,10 @@
 
 {% block content %}
 {#    <h1>{{ admin.username }}</h1>#}
-    <form action="" method="POST">
+    <form action="." method="POST"> {% csrf_token %}
         <table class="table">
             {{ admin_form.as_table }}
         </table>
-    </form>
     <input type="submit" class="btn btn-primary" />
+    </form>
 {% endblock content %}

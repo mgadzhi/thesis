@@ -23,7 +23,7 @@ class User(auth.models.AbstractUser):
         AGENT: ugettext("Agent"),
     }
 
-    reseller = models.ForeignKey('self', db_index=True, null=True, default=None, related_name='agents')
+    agent_reseller = models.ForeignKey('self', db_index=True, null=True, default=None, related_name='agents')
     user_type = models.CharField(max_length=2, choices=USER_TYPES, default=AGENT)
 
 
@@ -41,3 +41,30 @@ class User(auth.models.AbstractUser):
 
     def get_type(self):
         return self.TYPES_DESCRIPTION[self.user_type]
+
+
+class AdminManager(models.Manager):
+    def get_query_set(self):
+        return super(AdminManager, self).get_query_set().filter(user_type=User.ADMIN)
+
+
+class ResellerManager(models.Manager):
+    def get_query_set(self):
+        return super(ResellerManager, self).get_query_set().filter(user_type=User.RESELLER)
+
+
+class AgentManager(models.Manager):
+    def get_query_set(self):
+        return super(AgentManager, self).get_query_set().filter(user_type=User.AGENT)
+
+
+class Admin(User):
+    objects = AdminManager()
+
+
+class Reseller(User):
+    objects = ResellerManager()
+
+
+class Agent(User):
+    objects = AgentManager()
