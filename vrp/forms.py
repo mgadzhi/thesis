@@ -2,7 +2,7 @@
 import datetime
 from django import forms
 from django.core.exceptions import ValidationError
-from vrp.models import Order, Station
+from vrp.models import Order, Station, Vehicle
 
 
 class OrderForm(forms.ModelForm):
@@ -45,3 +45,9 @@ class StationForm(forms.ModelForm):
 
     class Meta:
         model = Station
+
+
+class VehicleForm(forms.ModelForm):
+
+    class Meta:
+        model = Vehicle

@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
-from vrp.forms import OrderForm, StationForm
+from vrp.forms import OrderForm, StationForm, VehicleForm
 from vrp.models import Station, Order, Vehicle
 
 
@@ -89,4 +89,24 @@ def vehicles_list(request):
     vehicles = Vehicle.objects.all()
     return render(request, 'vehicles_list.html', {
         'vehicles': vehicles,
+    })
+
+
+def vehicle_create(request):
+    actor = request.user
+    if not actor.is_admin:
+        messages.error(request, 'Only admins may add new vehicles')
+        return render(request, 'base.html')
+    if request.method == 'POST':
+        vehicle_form = VehicleForm(request.POST)
+        if vehicle_form.is_valid():
+            vehicle_form.save()
+            messages.success(request, 'New vehicle added')
+        else:
+            for error in vehicle_form.errors:
+                messages.error(request, error)
+        return redirect(reverse('vehicles_list'))
+    vehicle_form = VehicleForm()
+    return render(request, 'vehicle_create.html', {
+        'vehicle_form': vehicle_form,
     })

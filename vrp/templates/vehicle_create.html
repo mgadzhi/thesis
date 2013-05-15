@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <form action="." method="POST">{% csrf_token %}
+        <table class="table">
+            {{ vehicle_form.as_table }}
+        </table>
+        <input type="submit" class="btn btn-primary" value="Create" />
+    </form>
+    <a class="btn btn-primary" href="..">{% trans "Go back" %}</a>
+{% endblock content %}
