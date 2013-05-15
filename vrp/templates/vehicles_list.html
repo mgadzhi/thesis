@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <table class="table">
+        <tr>
+            <th>
+                {% trans "Id" %}
+                {% trans "Name" %}
+                {% trans "Max capacity" %}
+            </th>
+        </tr>
+        {% for vehicle in vehicles %}
+            <tr>
+                <td>{{ vehicle.id }}</td>
+                <td>{{ vehicle.name }}</td>
+                <td>{{ vehicle.max_capacity }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

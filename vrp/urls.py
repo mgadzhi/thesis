@@ -10,4 +10,5 @@ urlpatterns = patterns(
     url(r'^orders/create/$', views.order_create, name="create_order"),
     url(r'^stations/$', views.stations_list),
     url(r'^stations/create/$', views.station_create, name="create_station"),
+    url(r'^vehicles/$', views.vehicles_list, name="vehicles_list"),
 )
