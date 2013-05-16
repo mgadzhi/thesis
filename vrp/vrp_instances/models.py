@@ -33,7 +33,7 @@ class GraphNode(object):
     @classmethod
     def distance(cls, a, b):
         u"""Euclidean metric"""
-        return euclidean_metric((a.x, b.x), (a.y, b.y))
+        return euclidean_metric((a.x, a.y), (b.x, b.y))
 
 
 class Station(GraphNode):

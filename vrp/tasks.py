@@ -24,8 +24,7 @@ def execute_orders_vrp():
         dist=Station.distance
     )
     graph = init_with_pheromones(graph)
-    return graph
-    # return solve_vrp(graph, depot, vehicles, iter_num=1000)
+    return solve_vrp(graph, depot, vehicles, iter_num=1000)
 
 
 @task()

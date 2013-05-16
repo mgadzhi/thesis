@@ -2,7 +2,6 @@
 from vrp.errors import NotEnoughVehiclesError
 
 from vrp.utils import another
-from vrp.models import Order
 
 import random
 import networkx as nx

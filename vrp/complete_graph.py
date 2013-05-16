@@ -2,7 +2,6 @@
 import itertools
 
 import networkx as nx
-from vrp.models import Station
 
 
 class CompleteGraph(nx.Graph):
