@@ -1,7 +1,8 @@
 # Django settings for thesis project.
-from django.core.urlresolvers import reverse
-import warnings
-import exceptions
+
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
 # warnings.filterwarnings(
 #     'ignore',
@@ -134,6 +135,7 @@ INSTALLED_APPS = (
     'users',
     'south',
     'rest_framework',
+    'djcelery',
 )
 
 # A sample logging configuration. The only tangible logging

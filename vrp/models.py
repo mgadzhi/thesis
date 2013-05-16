@@ -24,7 +24,7 @@ class MapNode(models.Model):
     @classmethod
     def distance(cls, a, b):
         u"""Euclidean metric"""
-        return euclidean_metric((a.x, b.x), (a.y, b.y))
+        return euclidean_metric((a.x, a.y), (b.x, b.y))
 
 
 class Depot(MapNode):
@@ -36,6 +36,10 @@ class Station(MapNode):
 
     def __unicode__(self):
         return u'Station #{}'.format(self.id)
+
+    @property
+    def demand(self):
+        return self.orders.get(status=Order.STATUS_CREATED).capacity
 
 
 class Edge(models.Model):
@@ -167,7 +171,7 @@ class Order(models.Model):
 
     agent = models.ForeignKey(Agent)
     reseller = models.ForeignKey(Reseller)
-    station = models.ForeignKey(Station)
+    station = models.ForeignKey(Station, related_name='orders')
     status = models.CharField(max_length=20)
     creation_date = models.DateTimeField()
     capacity = models.IntegerField()

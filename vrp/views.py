@@ -110,3 +110,19 @@ def vehicle_create(request):
     return render(request, 'vehicle_create.html', {
         'vehicle_form': vehicle_form,
     })
+
+
+def active_orders(request):
+    actor = request.user
+    if not actor.is_admin:
+        messages.error(request, 'Only admins can see this page')
+        return render(request, 'base.html')
+    orders = Order.objects.filter(status=Order.STATUS_CREATED)
+    return render(request, 'active_orders.html', {
+        'orders': orders,
+    })
+
+
+def do_execute_active_orders(request):
+    return HttpResponse('Under development')
+
