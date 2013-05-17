@@ -1,0 +1,26 @@
+
+{% load i18n %}
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="#">Direct.me</a>
+        <ul class="nav">
+            <li class="active"><a href="#">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'orders_list' %}">{% trans "Orders" %}</a></li>
+            <li><a href="{% url 'create_order' %}">{% trans "New order" %}</a></li>
+            {%  if user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {{ user }}
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/signout/">Sign out</a></li>
+                    </ul>
+                </li>
+            {% else %}
+                <li><a href="/signin/">Sign in</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

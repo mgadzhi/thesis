@@ -17,29 +17,13 @@
 </head>
 <body>
     {% block navbar %}
-        <div class="navbar">
-            <div class="navbar-inner">
-                <a class="brand" href="#">Title</a>
-                <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    {%  if user.is_authenticated %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {{ user }}
-                                <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/signout/">Sign out</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li><a href="/signin/">Sign in</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+        {% if user.is_admin %}
+            {% include "elems/admin_menu.html" %}
+        {% elif user.is_reseller %}
+            {% include "elems/reseller_menu.html" %}
+        {% elif user.is_agent %}
+            {% include "elems/agent_menu.html" %}
+        {% endif %}
     {% endblock navbar %}
     <div class="container">
         {% if errors %}
