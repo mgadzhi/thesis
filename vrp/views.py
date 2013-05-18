@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+import json
+import datetime
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from vrp.forms import OrderForm, StationForm, VehicleForm
-from vrp.models import Station, Order, Vehicle
+from vrp.models import Station, Order, Vehicle, TaskOrdersMap
+from vrp.tasks import execute_orders_task
 
 
 def index(request):
@@ -123,6 +126,28 @@ def active_orders(request):
     })
 
 
+def tasks_list(request):
+    actor = request.user
+    if not actor.is_admin:
+        messages.error(request, 'Only admins can see this page')
+        return render(request, 'base.html')
+    task_orders = TaskOrdersMap.objects.all()
+    return render(request, 'tasks_list.html', {
+        'task_orders': task_orders,
+    })
+
+
 def do_execute_active_orders(request):
-    return HttpResponse('Under development')
+    orders = Order.objects.filter(status=Order.STATUS_CREATED)
+    if not orders.all():
+        messages.error(request, 'There are no orders to execute')
+        return redirect('.')
+    async_result = execute_orders_task.delay(orders)
+    task_orders_map = TaskOrdersMap(
+        task_id=async_result.task_id,
+        orders=json.dumps([x.id for x in orders]),
+        started=datetime.datetime.now()
+    )
+    task_orders_map.save()
+    return redirect(reverse('tasks_list'))
 

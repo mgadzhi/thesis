@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.db import models
+import jsonfield
 from users.models import Reseller, Agent
 from vrp.utils import euclidean_metric
 from vrp.errors import VehiclePouringError
@@ -206,3 +207,11 @@ def load_orders_map_by_id(id_):
         if map_.has_node(order.station):
             map_.node[order.station][Order.CAPACITY] = order.capacity
     return map_
+
+
+class TaskOrdersMap(models.Model):
+
+    task_id = models.CharField(max_length=64)
+    orders = jsonfield.JSONField()
+    started = models.DateTimeField()
+    finished = models.DateTimeField(null=True)

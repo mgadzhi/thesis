@@ -13,8 +13,7 @@ def add(x, y):
     return x + y
 
 
-def execute_orders_vrp():
-    orders = Order.objects.filter(status=Order.STATUS_CREATED)
+def execute_orders_vrp(orders, *args, **kwargs):
     depot = Depot.objects.get(pk=1)  # Пока можем считать, что депо только 1.
     stations = Station.objects.filter(id__in=[o.station_id for o in orders])
     vehicles = Vehicle.objects.all()
@@ -28,5 +27,5 @@ def execute_orders_vrp():
 
 
 @task()
-def execute_orders_task():
-    return execute_orders_vrp()
+def execute_orders_task(orders, *args, **kwargs):
+    return execute_orders_vrp(orders, *args, **kwargs)

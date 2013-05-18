@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <table class="table">
+        <tr>
+            <th>{% trans "Task id" %}</th>
+            <th>{% trans "Started" %}</th>
+            <th>{% trans "Finished" %}</th>
+        </tr>
+        {% for task in task_orders %}
+            <tr>
+                <td>{{ task.task_id }}</td>
+                <td>{{ task.started }}</td>
+                <td>{{ task.finished }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

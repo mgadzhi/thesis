@@ -26,7 +26,6 @@ class User(auth.models.AbstractUser):
     agent_reseller = models.ForeignKey('self', db_index=True, null=True, default=None, related_name='agents')
     user_type = models.CharField(max_length=2, choices=USER_TYPES, default=AGENT)
 
-
     @property
     def is_admin(self):
         return self.user_type == self.ADMIN
