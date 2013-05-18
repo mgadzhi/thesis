@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    {{ task }}
+    <table class="table">
+        <tr>
+            <th>{% trans "Vehicle" %}</th>
+            <th>{% trans "Path" %}</th>
+        </tr>
+        {% for vehicle, path in result.graph.paths.items %}
+            asdsfdds
+            <tr>
+                <td>{{ vehicle }}</td>
+                <td>
+                    <ul class="plainlist">
+                        {% for station in path %}
+                            <li class="list_item">{{ station }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

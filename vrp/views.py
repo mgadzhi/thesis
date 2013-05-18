@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import datetime
+from celery.result import AsyncResult
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
+from vrp.ant_colony import total_cost
 from vrp.forms import OrderForm, StationForm, VehicleForm
 from vrp.models import Station, Order, Vehicle, TaskOrdersMap
 from vrp.tasks import execute_orders_task
@@ -150,4 +151,17 @@ def do_execute_active_orders(request):
     )
     task_orders_map.save()
     return redirect(reverse('tasks_list'))
+
+
+def task_result(request, task_id):
+    task = AsyncResult(task_id)
+    context = {}
+    if not task.ready():
+        messages.info(request, 'Task is currently running.')
+    else:
+        context['task'] = task
+        result = task.get()
+        context['result'] = result
+        context['total_cost'] = total_cost(result)
+    return render(request, 'task_result.html', context)
 

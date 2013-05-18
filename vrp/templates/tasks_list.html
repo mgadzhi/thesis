@@ -7,12 +7,18 @@
             <th>{% trans "Task id" %}</th>
             <th>{% trans "Started" %}</th>
             <th>{% trans "Finished" %}</th>
+            <th></th>
         </tr>
         {% for task in task_orders %}
             <tr>
                 <td>{{ task.task_id }}</td>
                 <td>{{ task.started }}</td>
                 <td>{{ task.finished }}</td>
+                <td>
+                    {% with task_id=task.task_id %}
+                        <a class="btn btn-primary" href="{% url 'task_result' task_id=task_id %}">{% trans "Result" %}</a>
+                    {% endwith %}
+                </td>
             </tr>
         {% endfor %}
     </table>
