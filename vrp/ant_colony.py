@@ -20,26 +20,36 @@ TAU0 = 1.0 / 784
 
 
 def solve_vrp(graph, start, ants, iter_num=1000):
+    # Инициализируем первоначальный уровень феромона на графе
     graph = init_with_pheromones(graph)
+    # "Лучшее значение" по умолчанию - полный граф
     best_solution = graph
     for i_ in xrange(iter_num):
         explored = nx.Graph(paths={})
         for ant in ants:
+            # Добавляем депо в начало маршрута
             explored.add_node(start)
             explored.graph['paths'][ant] = [start]
+            # Заправляем грузовик ("муравья")
             ant.fill()
+            # Отправляем грузовик объезжать клиентов
             explored = traverse(graph, ant, start, explored)
+            # Если количество вершин в начальном и исследованном
+            # Графах совпадает, то все клиенты обслужены
+            # Остальные грузовики не используются
             if explored.number_of_nodes() == graph.number_of_nodes():
                 best_solution = better_solution(best_solution, explored)
-                # print total_cost(best_solution)
                 break
+        # Если мы использовали все грузовики,
+        # Но не обслужили всех клиентов, то решения нет
         if explored.number_of_nodes() != graph.number_of_nodes():
             raise NotEnoughVehiclesError()
         for edge in graph.edges():
+            # Локальное обновление феромона
             local_pheromone_update(graph, edge)
-        # print [round(t[2][PHEROMONE], 5) for t in graph.edges(data=PHEROMONE)]
         best_length = total_cost(best_solution)
         for edge in best_solution.edges():
+            # Глобальное обновление феромона
             global_pheromone_update(graph, edge, best_length)
 
     return best_solution
@@ -131,6 +141,7 @@ def eta(graph, r, s):
     u"""
         1/d. d is Euclidean distance.
     """
+    # print r, s
     return 1.0 / (graph[r][s]['weight'])
 
 

@@ -3,7 +3,6 @@ from vrp.vrp_instances.models import Station, Depot
 
 
 def parse_vrp_instance(filename):
-    print 'Start parsing'
     instance = {}
     depot = None
     with open(filename, 'r') as f:
